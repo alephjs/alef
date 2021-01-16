@@ -17,40 +17,45 @@ export class Component {
   onMount(...effects) {
     this.effects.push(...effects)
   }
-  appendChild(slot) {
-    this.slots.push(slot)
-  }
-  mount(el, refEl) {
-    if (!this.mounted) {
-      this.mounted = true
-      if (refEl) {
-        this.nodes.forEach(node => dom.insertNode(node, refEl))
-      } else {
-        this.nodes.forEach(node => dom.appendNode(el, node))
-      }
-      this.disposes = this.effects.map(effect => effect.update()).filter(isFunction)
+}
+
+export function mount(component, el, refEl) {
+  if (!component.mounted) {
+    component.mounted = true
+    if (refEl) {
+      component.nodes.forEach(node => dom.insertNode(node, refEl));
+    } else {
+      component.nodes.forEach(node => dom.appendNode(el, node));
     }
+    component.disposes = component.effects.map(effect => effect.update()).filter(isFunction);
   }
-  unmount() {
-    if (this.mounted) {
-      this.mounted = false
-      this.disposes.forEach(dispose => dispose())
-      this.disposes = []
-      this.nodes.forEach(node => dom.removeNode(node))
-    }
+}
+
+export function appendChild(component, slot) {
+  component.slots.push(slot);
+}
+
+export function update(component, key, value) {
+  component.props[key] = value;
+  component.listeners.get(key)?.forEach(callback => callback());
+}
+
+export function unmount(component) {
+  if (component.mounted) {
+    component.mounted = false;
+    component.disposes.forEach(dispose => dispose());
+    component.disposes = [];
+    component.nodes.forEach(node => dom.removeNode(node));
   }
-  update(key, value) {
-    this.props[key] = value
-    this.listeners.get(key)?.forEach(callback => callback()) // todo: push to asynchronous update queue
+}
+
+export function listen(component, key, ...callbacks) {
+  let a = component.listeners.get(key);
+  if (!a) {
+    a = [];
+    component.listeners.set(key, a);
   }
-  listen(key, ...callbacks) {
-    let a = this.listeners.get(key)
-    if (!a) {
-      a = []
-      this.listeners.set(key, a)
-    }
-    a.push(...callbacks)
-  }
+  a.push(...callbacks);
 }
 
 /** Create and return a new component. */
