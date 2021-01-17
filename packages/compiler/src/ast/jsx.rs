@@ -71,14 +71,10 @@ impl JSXTransformer {
             }
             JSXElementChild::JSXElement(el) => self.transform_element(*el).as_arg(),
             JSXElementChild::JSXFragment(el) => self.transform_fragment(el).as_arg(),
-            JSXElementChild::JSXExprContainer(JSXExprContainer {
-                expr: JSXExpr::Expr(e),
-                ..
-            }) => self.transform_expr(*e, false).as_arg(),
-            JSXElementChild::JSXExprContainer(JSXExprContainer {
-                expr: JSXExpr::JSXEmptyExpr(..),
-                ..
-            }) => return None,
+            JSXElementChild::JSXExprContainer(JSXExprContainer { expr, .. }) => match expr {
+                JSXExpr::Expr(e) => self.transform_expr(*e, false).as_arg(),
+                JSXExpr::JSXEmptyExpr(..) => return None,
+            },
             JSXElementChild::JSXSpreadChild(JSXSpreadChild { .. }) => {
                 unimplemented!("jsx sperad child")
             }

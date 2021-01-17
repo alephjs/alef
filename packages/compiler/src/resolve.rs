@@ -89,13 +89,11 @@ mod tests {
   #[test]
   fn test_to_component_name() {
     assert_eq!(to_component_name("app.alef"), "App");
+    assert_eq!(to_component_name("APP.alef"), "APP");
     assert_eq!(to_component_name("hello-world.alef"), "HelloWorld");
-    assert_eq!(to_component_name("hello_world.alef"), "HelloWorld");
-    assert_eq!(to_component_name("hello.world.alef"), "HelloWorld");
     assert_eq!(to_component_name("hello world.alef"), "HelloWorld");
-    assert_eq!(to_component_name("HELLO world.alef"), "HELLOWorld");
-    assert_eq!(to_component_name("h798.alef"), "H798");
-    assert_eq!(to_component_name("798hello world.alef"), "HelloWorld");
+    assert_eq!(to_component_name("hi798.alef"), "Hi798");
+    assert_eq!(to_component_name("798hi.alef"), "Hi");
     assert_eq!(to_component_name("798.alef"), "App");
     assert_eq!(to_component_name("Hello 世界!.alef"), "Hello");
   }
