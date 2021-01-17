@@ -4,7 +4,7 @@ use common::{t, t_custom_runtime_module};
 use regex::Regex;
 
 #[test]
-fn test_dom_helper_module() {
+fn test_custom_runmtime_module() {
   let (code, _) = t_custom_runtime_module("./App.alef", "", "https://deno.land/x/alef/dom.ts");
   assert!(code.contains(" from \"https://deno.land/x/alef/dom.ts\";"));
   let (code, _) = t_custom_runtime_module("./App.alef", "", "window.__ALEF_DOM");
